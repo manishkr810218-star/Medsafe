@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useLang } from "../i18n/LanguageContext.jsx";
 import { api } from "../services/api.js";
 import SeverityBadge from "../components/SeverityBadge.jsx";
+import { useMedicines } from "../context/MedicineContext.jsx";
+import { sampleGraph } from "../services/sampleWorkspace.js";
 
 const copy = {
   en: {
@@ -36,14 +38,21 @@ const copy = {
 
 export default function Graph() {
   const { lang, t, pick } = useLang();
+  const { mode } = useMedicines();
   const c = copy[lang];
   const [graph, setGraph] = useState(null);
   const [error, setError] = useState(false);
   useEffect(() => {
+    if (mode === "loading") return;
+    if (mode === "sample") {
+      setGraph(sampleGraph());
+      setError(false);
+      return;
+    }
     api("/graph")
       .then(setGraph)
       .catch(() => setError(true));
-  }, []);
+  }, [mode]);
   const nodes = graph?.nodes || [];
   const name = (id) => {
     const node = nodes.find((item) => item.id === id);

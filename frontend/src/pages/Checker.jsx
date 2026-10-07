@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext.jsx";
 import { useMedicines } from "../context/MedicineContext.jsx";
-import { checkInteractions } from "../services/interactionService.js";
 import AlertCard from "../components/AlertCard.jsx";
 
 export default function Checker() {
   const { t, lang, pick } = useLang();
-  const { medicines, foods, loading, setLastCheck } = useMedicines();
+  const { medicines, foods, loading, runInteractionCheck } = useMedicines();
   const c = t.checker;
   // Medicines load from the API after mount, so track the ones the user UNchecked.
   const [deselected, setDeselected] = useState([]);
@@ -33,12 +32,11 @@ export default function Checker() {
     }
     setBusy(true);
     try {
-      const res = await checkInteractions({
+      const res = await runInteractionCheck({
         medicineIds: selMeds,
         foodIds: selFoods,
       });
       setResult(res);
-      setLastCheck(res);
     } catch {
       setError(t.common.apiError);
     } finally {

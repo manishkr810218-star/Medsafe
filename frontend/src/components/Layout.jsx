@@ -5,7 +5,7 @@ import { useMedicines } from "../context/MedicineContext.jsx";
 
 export default function Layout() {
   const { t, setLang, lang } = useLang();
-  const { error, reload } = useMedicines();
+  const { error, reload, mode } = useMedicines();
   const links = [
     ["/", t.nav.dashboard],
     ["/medicines", t.nav.medicines],
@@ -52,7 +52,7 @@ export default function Layout() {
         </div>
       </header>
       <div className="demo-banner">
-        <strong>DEMO ENVIRONMENT</strong>
+        <strong>{mode === "sample" ? "OFFLINE SAMPLE WORKSPACE" : "PROTOTYPE DATA"}</strong>
         <span>{t.demoBanner}</span>
       </div>
       {error && (

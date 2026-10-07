@@ -15,7 +15,12 @@ import {
 import {
   getDrugCatalog,
   getFoodCatalog,
+  checkInteractions,
 } from "../services/interactionService.js";
+import {
+  sampleDrugs, sampleFoods, loadSampleMedicines, saveSampleMedicines,
+  addSampleMedicine, runSampleCheck,
+} from "../services/sampleWorkspace.js";
 
 const MedicineContext = createContext(null);
 const CHECK_KEY = "dic.lastCheck";
@@ -45,12 +50,16 @@ export function MedicineProvider({ children }) {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false); // true when the backend is unreachable / failing
+  const [mode, setMode] = useState("loading"); // api | sample
   const [lastCheck, setLastCheck] = useState(loadLastCheck);
 
   useEffect(
     () => localStorage.setItem(CHECK_KEY, JSON.stringify(lastCheck)),
     [lastCheck],
   );
+  useEffect(() => {
+    if (mode === "sample") saveSampleMedicines(medicines);
+  }, [mode, medicines]);
 
   const reload = useCallback(async () => {
     setLoading(true);
@@ -64,8 +73,13 @@ export function MedicineProvider({ children }) {
       setDrugs(d);
       setFoods(f);
       setError(false);
+      setMode("api");
     } catch {
-      setError(true);
+      setMedicines(loadSampleMedicines());
+      setDrugs(sampleDrugs);
+      setFoods(sampleFoods);
+      setError(false);
+      setMode("sample");
     } finally {
       setLoading(false);
     }
@@ -89,15 +103,34 @@ export function MedicineProvider({ children }) {
     }
   }, []);
 
-  const addMedicine = useCallback(
-    (input) => mutate(() => addMedicineApi(input)),
-    [mutate],
-  );
-  const removeMedicine = useCallback(
-    (id) => mutate(() => removeMedicineApi(id)),
-    [mutate],
-  );
-  const clearMedicines = useCallback(() => mutate(clearMedicinesApi), [mutate]);
+  const addMedicine = useCallback(async (input) => {
+    if (mode === "sample") {
+      setMedicines((current) => addSampleMedicine(current, input));
+      return true;
+    }
+    return mutate(() => addMedicineApi(input));
+  }, [mode, mutate]);
+  const removeMedicine = useCallback(async (id) => {
+    if (mode === "sample") {
+      setMedicines((current) => current.filter((item) => item.id !== id));
+      return true;
+    }
+    return mutate(() => removeMedicineApi(id));
+  }, [mode, mutate]);
+  const clearMedicines = useCallback(async () => {
+    if (mode === "sample") {
+      setMedicines([]);
+      return true;
+    }
+    return mutate(clearMedicinesApi);
+  }, [mode, mutate]);
+  const runInteractionCheck = useCallback(async ({ medicineIds, foodIds }) => {
+    const result = mode === "sample"
+      ? runSampleCheck(medicines, medicineIds, foodIds)
+      : await checkInteractions({ medicineIds, foodIds });
+    setLastCheck(result);
+    return result;
+  }, [mode, medicines]);
 
   return (
     <MedicineContext.Provider
@@ -107,10 +140,12 @@ export function MedicineProvider({ children }) {
         foods,
         loading,
         error,
+        mode,
         reload,
         addMedicine,
         removeMedicine,
         clearMedicines,
+        runInteractionCheck,
         lastCheck,
         setLastCheck,
       }}
