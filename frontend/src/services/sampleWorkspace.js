@@ -2,6 +2,7 @@
 // are fictional and must never be used to make care decisions.
 export const sampleDrugs = [
   "Demoxetine", "Placebol", "Sampleprin", "Mockacillin", "Testafen",
+  "Trialadine", "Simulor", "Mockifen", "Fictoval",
 ].map((name) => ({ id: name.toLowerCase(), name, isDemo: true }));
 
 export const sampleFoods = [
@@ -9,17 +10,28 @@ export const sampleFoods = [
   { id: "demo-dairy", name: { en: "Demo Dairy Product", hi: "डेमो डेयरी उत्पाद", ta: "மாதிரி பால் பொருள்" } },
   { id: "demo-greens", name: { en: "Demo Leafy Greens", hi: "डेमो हरी पत्तेदार सब्ज़ी", ta: "மாதிரி கீரைகள்" } },
   { id: "demo-tea", name: { en: "Demo Herbal Tea", hi: "डेमो हर्बल चाय", ta: "மாதிரி மூலிகை தேநீர்" } },
+  { id: "demo-grain", name: { en: "Demo Grain Meal", hi: "डेमो अनाज भोजन", ta: "மாதிரி தானிய உணவு" } },
+  { id: "demo-berries", name: { en: "Demo Berry Bowl", hi: "डेमो बेरी कटोरा", ta: "மாதிரி பெர்ரி உணவு" } },
 ].map((food) => ({ ...food, isDemo: true }));
 
 const drugPairs = [
   ["demoxetine", "placebol", "high"],
   ["sampleprin", "testafen", "moderate"],
   ["mockacillin", "placebol", "low"],
+  ["placebol", "trialadine", "moderate"],
+  ["demoxetine", "simulor", "low"],
+  ["mockifen", "trialadine", "high"],
+  ["fictoval", "simulor", "moderate"],
+  ["mockifen", "testafen", "low"],
 ];
 const foodPairs = [
   ["demoxetine", "demo-citrus", "moderate"],
   ["mockacillin", "demo-dairy", "low"],
   ["testafen", "demo-greens", "high"],
+  ["trialadine", "demo-tea", "high"],
+  ["simulor", "demo-grain", "low"],
+  ["fictoval", "demo-berries", "moderate"],
+  ["mockifen", "demo-dairy", "moderate"],
 ];
 const findDrug = (id) => sampleDrugs.find((drug) => drug.id === id);
 const findFood = (id) => sampleFoods.find((food) => food.id === id);

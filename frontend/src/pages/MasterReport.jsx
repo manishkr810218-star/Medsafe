@@ -45,6 +45,18 @@ const sampleDocuments = () => [
   { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription B", text: "Sampleprin 5 mg after food\nTestafen 100 mg", confidence: null, reviewed: false, source: "sample" },
   { id: crypto.randomUUID(), kind: "clinic", name: "Fictional clinic checkup", text: "Follow-up visit. No validated laboratory values are supplied in this sample. Confirm diagnoses and results from the original report.", confidence: null, reviewed: false, source: "sample" },
 ];
+const extendedCaseLabels = {
+  en: "Load extended fictional case · 3 prescriptions + 2 checkups",
+  hi: "बड़ा काल्पनिक केस · 3 पर्चे + 2 जाँचें",
+  ta: "விரிவான கற்பனை வழக்கு · 3 சீட்டுகள் + 2 பரிசோதனைகள்",
+};
+const extendedSampleDocuments = () => [
+  { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription · clinic A", text: "Demoxetine 10 mg once daily\nPlacebol 20 mg at night", confidence: null, reviewed: false, source: "sample" },
+  { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription · clinic B", text: "Trialadine 5 mg after breakfast\nMockifen 50 mg at night", confidence: null, reviewed: false, source: "sample" },
+  { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription · clinic C", text: "Simulor 2 mg once daily\nFictoval 10 mg after food", confidence: null, reviewed: false, source: "sample" },
+  { id: crypto.randomUUID(), kind: "clinic", name: "Fictional clinic checkup · visit A", text: "SYNTHETIC VALUES ONLY: blood pressure 138/84 mmHg; pulse 72/min; weight 67 kg. No diagnosis or treatment decision is generated from these values.", confidence: null, reviewed: false, source: "sample" },
+  { id: crypto.randomUUID(), kind: "clinic", name: "Fictional clinic checkup · visit B", text: "SYNTHETIC VALUES ONLY: HbA1c 6.8%; creatinine 0.9 mg/dL. Example food history: Demo Herbal Tea and Demo Berry Bowl. These values are not interpreted by this prototype.", confidence: null, reviewed: false, source: "sample" },
+];
 
 export default function MasterReport() {
   const { lang, pick } = useLang();
@@ -128,7 +140,7 @@ export default function MasterReport() {
     <div className="page-heading"><div><span className="eyebrow">PATIENT SAFETY WORKFLOW</span><h1>{c.title}</h1><p>{c.lead}</p></div><span className="badge badge-warn">{c.status}</span></div>
     <div className="report-steps" aria-live="polite">{[c.documents, c.medicines, c.comparison, c.reviewers].map((label, index) => <span className={stageDone[index] ? "done" : busyId && index === (busyId === "compare" ? 2 : 0) ? "working" : ""} key={index}>{String(index + 1).padStart(2, "0")} {label.split("· ")[1]} {stageDone[index] ? "✓" : busyId && index === (busyId === "compare" ? 2 : 0) ? "…" : ""}</span>)}</div>
     <section className="card master-section"><div className="section-head"><h2>{c.documents}</h2><button className="text-link" onClick={() => { setDocuments([]); setResult(null); }}>{c.clear}</button></div><p className="muted">{c.privacy}</p>
-      <div className="actions"><label className="btn btn-outline upload-action">{c.prescription}<input type="file" accept="image/*,application/pdf" multiple onChange={(event) => { attach("prescription", event.target.files); event.target.value = ""; }} /></label><label className="btn btn-outline upload-action">{c.clinic}<input type="file" accept="image/*,application/pdf" multiple onChange={(event) => { attach("clinic", event.target.files); event.target.value = ""; }} /></label><button className="btn btn-outline" onClick={() => { setDocuments(sampleDocuments()); setResult(null); }}>{c.sample}</button></div>
+      <div className="actions"><label className="btn btn-outline upload-action">{c.prescription}<input type="file" accept="image/*,application/pdf" multiple onChange={(event) => { attach("prescription", event.target.files); event.target.value = ""; }} /></label><label className="btn btn-outline upload-action">{c.clinic}<input type="file" accept="image/*,application/pdf" multiple onChange={(event) => { attach("clinic", event.target.files); event.target.value = ""; }} /></label><button className="btn btn-outline" onClick={() => { setDocuments(sampleDocuments()); setResult(null); }}>{c.sample}</button><button className="btn btn-outline" onClick={() => { setDocuments(extendedSampleDocuments()); setResult(null); }}>{extendedCaseLabels[lang]}</button></div>
       {documents.length === 0 && <p className="empty-panel">{c.noDocs}</p>}
       <div className="document-grid">{documents.map((document) => <article className="document-card" key={document.id}><div className="section-head"><div><span className="eyebrow">{document.kind === "clinic" ? c.clinic : c.prescription}</span><h3>{document.name}</h3></div><span className="badge">{document.source === "sample" ? "SAMPLE" : document.confidence === null ? "NEW" : `${c.OCR} ${document.confidence}%`}</span></div>{document.file && <button className="btn btn-small" disabled={Boolean(busyId)} onClick={() => scan(document)}>{busyId === document.id ? `${c.scan} ${progress}%` : c.scan}</button>}<textarea aria-label={`${document.name} text`} rows={5} placeholder={c.OCR} value={document.text} onChange={(event) => { patchDocument(document.id, { text: event.target.value, reviewed: false }); setResult(null); }} /><label className="check"><input type="checkbox" checked={document.reviewed} disabled={!document.text.trim()} onChange={(event) => patchDocument(document.id, { reviewed: event.target.checked })} />{c.review}</label></article>)}</div>
     </section>
