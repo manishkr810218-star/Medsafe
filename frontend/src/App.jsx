@@ -6,6 +6,8 @@ import Checker from './pages/Checker.jsx';
 import Prescription from './pages/Prescription.jsx';
 import NotFound from './pages/NotFound.jsx';
 
+import About from './pages/About.jsx';
+
 export default function App() {
   return (
     <Routes>
@@ -14,6 +16,7 @@ export default function App() {
         <Route path="medicines" element={<Medicines />} />
         <Route path="checker" element={<Checker />} />
         <Route path="prescription" element={<Prescription />} />
+        <Route path="about" element={<About />} />
         <Route path="home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>
