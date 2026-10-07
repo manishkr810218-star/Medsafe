@@ -5,6 +5,7 @@ import Medicines from './pages/Medicines.jsx';
 import Checker from './pages/Checker.jsx';
 import Prescription from './pages/Prescription.jsx';
 import NotFound from './pages/NotFound.jsx';
+import DemoLab from './pages/DemoLab.jsx';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
         <Route path="medicines" element={<Medicines />} />
         <Route path="checker" element={<Checker />} />
         <Route path="prescription" element={<Prescription />} />
+        <Route path="demo" element={<DemoLab />} />
         <Route path="home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>

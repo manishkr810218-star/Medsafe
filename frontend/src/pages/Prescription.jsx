@@ -33,6 +33,13 @@ export default function Prescription() {
         </div>
         {showSoon && <p className="notice">{p.soon}</p>}
       </div>
+      <div className="card demo-cta">
+        <div>
+          <strong>Try the full demo</strong>
+          <p className="muted small">Sample prescriptions, clinical reports and patient data with drug-drug, drug-food and drug-disease checks.</p>
+        </div>
+        <Link className="btn" to="/demo">Open Demo Lab</Link>
+      </div>
     </>
   );
 }

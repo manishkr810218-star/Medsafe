@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useLang } from '../i18n/LanguageContext.jsx';
 import { useMedicines } from '../context/MedicineContext.jsx';
 
@@ -10,7 +10,9 @@ export default function Layout() {
     ['/medicines', t.nav.medicines],
     ['/checker', t.nav.checker],
     ['/prescription', t.nav.prescription],
+    ['/demo', t.nav.demo],
   ];
+  const isDemo = useLocation().pathname.startsWith('/demo');
 
   return (
     <div className="app">
@@ -30,13 +32,13 @@ export default function Layout() {
         </div>
       </header>
       <div className="demo-banner">{t.demoBanner}</div>
-      {error && (
+      {error && !isDemo && (
         <div className="error-banner">
           {t.common.apiError}{' '}
           <button className="btn btn-outline" onClick={reload}>{t.common.retry}</button>
         </div>
       )}
-      <main className="container">
+      <main className={`container${isDemo ? ' container-wide' : ''}`}>
         <Outlet />
       </main>
       <footer className="footer">{t.checker.disclaimer}</footer>

@@ -1,7 +1,7 @@
 export const translations = {
   en: {
     appName: 'Drug Interaction Checker',
-    nav: { dashboard: 'Dashboard', medicines: 'My Medicines', checker: 'Check Interactions', prescription: 'Prescription' },
+    nav: { dashboard: 'Dashboard', medicines: 'My Medicines', checker: 'Check Interactions', prescription: 'Prescription', demo: 'Demo Lab' },
     lang: 'हिन्दी',
     demoBanner: 'DEMO DATA: all drugs, foods and interactions shown here are fictional placeholders for prototype testing. They are NOT medical advice.',
     demoTag: 'DEMO',
@@ -76,7 +76,7 @@ export const translations = {
   },
   hi: {
     appName: 'दवा इंटरैक्शन चेकर',
-    nav: { dashboard: 'डैशबोर्ड', medicines: 'मेरी दवाएँ', checker: 'इंटरैक्शन जाँचें', prescription: 'पर्चा' },
+    nav: { dashboard: 'डैशबोर्ड', medicines: 'मेरी दवाएँ', checker: 'इंटरैक्शन जाँचें', prescription: 'पर्चा', demo: 'डेमो लैब' },
     lang: 'English',
     demoBanner: 'डेमो डेटा: यहाँ दिखाई गई सभी दवाएँ, खाद्य पदार्थ और इंटरैक्शन केवल प्रोटोटाइप के लिए काल्पनिक हैं। यह चिकित्सीय सलाह नहीं है।',
     demoTag: 'डेमो',
