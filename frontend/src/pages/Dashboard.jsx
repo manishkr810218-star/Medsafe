@@ -2,221 +2,44 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useLang } from "../i18n/LanguageContext.jsx";
 import { useMedicines } from "../context/MedicineContext.jsx";
-import AlertCard from "../components/AlertCard.jsx";
+import { useReminders } from "../context/ReminderContext.jsx";
+import { useReports } from "../context/ReportContext.jsx";
+import { sampleGraph } from "../services/sampleWorkspace.js";
 
 const copy = {
-  en: {
-    eyebrow: "YOUR MEDICATION WORKSPACE",
-    title: "A clearer view of your medicines.",
-    intro:
-      "Bring prescriptions, medicines, and possible interactions into one place. Review each result with a healthcare professional.",
-    primary: "Check interactions",
-    secondary: "Scan prescription",
-    workflow: "A simple path to a safer conversation",
-    step1: "Collect",
-    step1Text: "Add medicines or read a prescription image.",
-    step2: "Review",
-    step2Text: "Confirm names and inspect demo interaction links.",
-    step3: "Discuss",
-    step3Text: "Share a concise summary with a clinician.",
-    activity: "Your workspace",
-    activityText: "Current demo patient information",
-    medicines: "Medicines on list",
-    findings: "Demo findings",
-    latest: "Latest check",
-    graph: "Explore the knowledge graph",
-    clinician: "Open clinician view",
-    noFindings: "No check has been run yet.",
-    viewAll: "Run a new check",
-  },
-  hi: {
-    eyebrow: "आपका दवा कार्यक्षेत्र",
-    title: "अपनी दवाओं को स्पष्ट रूप से देखें।",
-    intro:
-      "पर्चे, दवाएँ और संभावित इंटरैक्शन एक जगह देखें। हर परिणाम को स्वास्थ्य विशेषज्ञ से जाँचें।",
-    primary: "इंटरैक्शन जाँचें",
-    secondary: "पर्चा स्कैन करें",
-    workflow: "डॉक्टर से बेहतर बातचीत के तीन कदम",
-    step1: "इकट्ठा करें",
-    step1Text: "दवाएँ जोड़ें या पर्चे का चित्र पढ़ें।",
-    step2: "जाँचें",
-    step2Text: "नामों की पुष्टि करें और डेमो लिंक देखें।",
-    step3: "चर्चा करें",
-    step3Text: "डॉक्टर के साथ संक्षिप्त सारांश साझा करें।",
-    activity: "आपका कार्यक्षेत्र",
-    activityText: "वर्तमान डेमो रोगी की जानकारी",
-    medicines: "सूची में दवाएँ",
-    findings: "डेमो निष्कर्ष",
-    latest: "पिछली जाँच",
-    graph: "ज्ञान ग्राफ देखें",
-    clinician: "डॉक्टर दृश्य खोलें",
-    noFindings: "अभी तक कोई जाँच नहीं हुई।",
-    viewAll: "नई जाँच करें",
-  },
-  ta: {
-    eyebrow: "உங்கள் மருந்துப் பணியிடம்",
-    title: "உங்கள் மருந்துகளைத் தெளிவாகக் காண்க.",
-    intro:
-      "சீட்டு, மருந்துகள் மற்றும் சாத்தியமான தொடர்புகளை ஒரே இடத்தில் காண்க. ஒவ்வொரு முடிவையும் மருத்துவரிடம் சரிபார்க்கவும்.",
-    primary: "தொடர்புகளைச் சோதி",
-    secondary: "சீட்டை ஸ்கேன் செய்",
-    workflow: "மருத்துவருடன் பேச மூன்று படிகள்",
-    step1: "சேகரி",
-    step1Text: "மருந்துகளைச் சேர்க்கவும் அல்லது சீட்டைப் படிக்கவும்.",
-    step2: "மதிப்பாய்வு",
-    step2Text: "பெயர்களை உறுதிசெய்து மாதிரி தொடர்புகளைக் காண்க.",
-    step3: "விவாதி",
-    step3Text: "சுருக்கத்தை மருத்துவருடன் பகிரவும்.",
-    activity: "உங்கள் பணியிடம்",
-    activityText: "தற்போதைய மாதிரி நோயாளி தகவல்",
-    medicines: "பட்டியலில் மருந்துகள்",
-    findings: "மாதிரி முடிவுகள்",
-    latest: "கடைசி சோதனை",
-    graph: "அறிவு வரைபடம்",
-    clinician: "மருத்துவர் பார்வை",
-    noFindings: "இன்னும் சோதனை செய்யவில்லை.",
-    viewAll: "புதிய சோதனை",
-  },
+  en: { eyebrow: "PATIENT WORKSPACE", title: "Make every medicine easier to understand.", lead: "Keep prescriptions, checkups, medicines and reminders in one calm place. Prepare questions for a clinician before changing treatment.", report: "Build master report", compare: "Compare medicines", medicines: "Medicines on list", findings: "Potential links", reminders: "Daily reminders", reports: "Reports this session", chart: "Interaction pattern", chartLead: "Severity counts from the latest check or the fictional sample graph.", current: "Latest patient check", sample: "Fictional catalog · sample graph", source: "Source", coverage: "Catalog name match", coverageText: "This measures only names found in the demo catalog, not clinical safety coverage.", recent: "Recent reports", none: "No report has been prepared in this tab yet.", open: "Open report workflow", schedule: "Today’s schedule", paused: "Paused", taken: "Taken", due: "Scheduled", all: "View reminders", workflow: "From documents to a clinician conversation", step1: "Read documents", step2: "Confirm medicine names", step3: "Compare possible links", step4: "Review and confirm", latest: "Latest finding", noFinding: "No patient check yet. The sample chart below shows fictional catalog edges only.", details: "View comparison", graph: "Explore the interaction graph", note: "No alert does not mean safe. All results require verified sources and clinician review." },
+  hi: { eyebrow: "रोगी कार्यक्षेत्र", title: "हर दवा को समझना आसान बनाएँ।", lead: "पर्चे, जाँच, दवाएँ और रिमाइंडर एक जगह रखें। इलाज बदलने से पहले डॉक्टर के लिए प्रश्न तैयार करें।", report: "मुख्य रिपोर्ट बनाएँ", compare: "दवाओं की तुलना", medicines: "सूची में दवाएँ", findings: "संभावित लिंक", reminders: "दैनिक रिमाइंडर", reports: "इस सत्र की रिपोर्ट", chart: "इंटरैक्शन का स्वरूप", chartLead: "पिछली जाँच या काल्पनिक नमूना ग्राफ में गंभीरता के अनुसार गिनती।", current: "पिछली रोगी जाँच", sample: "काल्पनिक सूची · नमूना ग्राफ", source: "स्रोत", coverage: "दवा नाम का मिलान", coverageText: "यह केवल डेमो सूची में मिले नाम गिनता है; चिकित्सीय सुरक्षा नहीं।", recent: "हाल की रिपोर्ट", none: "इस टैब में अभी कोई रिपोर्ट नहीं बनी।", open: "रिपोर्ट प्रक्रिया खोलें", schedule: "आज की समय-सारणी", paused: "बंद", taken: "ले ली", due: "निर्धारित", all: "सभी रिमाइंडर", workflow: "दस्तावेज़ से डॉक्टर के साथ बातचीत", step1: "दस्तावेज़ पढ़ें", step2: "दवा नाम जाँचें", step3: "संभावित लिंक देखें", step4: "समीक्षा और पुष्टि", latest: "पिछला निष्कर्ष", noFinding: "रोगी की जाँच नहीं हुई। नीचे का चार्ट केवल काल्पनिक नमूना लिंक दिखाता है।", details: "तुलना देखें", graph: "इंटरैक्शन ग्राफ देखें", note: "अलर्ट न मिलना सुरक्षा का प्रमाण नहीं। हर परिणाम के लिए मान्य स्रोत और डॉक्टर की समीक्षा चाहिए।" },
+  ta: { eyebrow: "நோயாளி பணியிடம்", title: "ஒவ்வொரு மருந்தையும் எளிதாகப் புரிந்துகொள்ளுங்கள்.", lead: "சீட்டுகள், பரிசோதனைகள், மருந்துகள், நினைவூட்டல்களை ஒரே இடத்தில் வைக்கவும். சிகிச்சையை மாற்றும் முன் மருத்துவரிடம் கேட்க வேண்டியவற்றைத் தயாரிக்கவும்.", report: "முழு அறிக்கை உருவாக்கு", compare: "மருந்துகளை ஒப்பிடு", medicines: "பட்டியலில் மருந்துகள்", findings: "சாத்தியமான இணைப்புகள்", reminders: "தினசரி நினைவூட்டல்கள்", reports: "இந்த அமர்வு அறிக்கைகள்", chart: "தொடர்பு வடிவம்", chartLead: "கடைசி சோதனை அல்லது கற்பனை மாதிரி வரைபடத்தின் தீவிர எண்ணிக்கை.", current: "கடைசி நோயாளி சோதனை", sample: "கற்பனை பட்டியல் · மாதிரி வரைபடம்", source: "ஆதாரம்", coverage: "மருந்துப் பெயர் பொருத்தம்", coverageText: "இது மாதிரி பட்டியலில் உள்ள பெயர்களை மட்டுமே அளக்கும்; மருத்துவ பாதுகாப்பை அல்ல.", recent: "சமீப அறிக்கைகள்", none: "இந்தத் தாவலில் இன்னும் அறிக்கை இல்லை.", open: "அறிக்கை படிகளைத் திற", schedule: "இன்றைய அட்டவணை", paused: "நிறுத்தம்", taken: "எடுத்தது", due: "திட்டம்", all: "நினைவூட்டல்களைப் பார்", workflow: "ஆவணத்திலிருந்து மருத்துவர் உரையாடல்", step1: "ஆவணங்களை வாசி", step2: "மருந்துப் பெயரை உறுதி செய்", step3: "சாத்தியமான தொடர்பு", step4: "மதிப்பாய்வு மற்றும் உறுதி", latest: "கடைசி கண்டறிதல்", noFinding: "நோயாளி சோதனை இல்லை. கீழே கற்பனை மாதிரி இணைப்புகள் மட்டுமே.", details: "ஒப்பீட்டைப் பார்", graph: "தொடர்பு வரைபடம்", note: "எச்சரிக்கை இல்லாதது பாதுகாப்பைக் குறிக்காது. உறுதிசெய்யப்பட்ட ஆதாரமும் மருத்துவர் மதிப்பாய்வும் தேவை." },
 };
+
+const severityOrder = ["high", "moderate", "low"];
+function SeverityChart({ counts, labels }) {
+  const max = Math.max(1, ...Object.values(counts));
+  return <div className="severity-chart" role="img" aria-label={severityOrder.map((key) => `${labels[key]} ${counts[key]}`).join(", ")}>
+    {severityOrder.map((key) => <div className="chart-row" key={key}><span>{labels[key]}</span><div className="chart-track"><div className={`chart-fill ${key}`} style={{ width: `${(counts[key] / max) * 100}%` }} /></div><strong>{counts[key]}</strong></div>)}
+  </div>;
+}
 
 export default function Dashboard() {
   const { lang, t, pick } = useLang();
-  const { medicines, lastCheck } = useMedicines();
   const c = copy[lang];
-  const alerts = lastCheck
-    ? [
-        ...lastCheck.drugDrug.map((item) => ({
-          ...item,
-          title: (item.drugNames || []).join(" + "),
-        })),
-        ...lastCheck.drugFood.map((item) => ({
-          ...item,
-          title: `${item.drugName || ""} + ${pick(item.foodName)}`,
-        })),
-      ]
-    : [];
-  const when = lastCheck
-    ? new Date(lastCheck.checkedAt).toLocaleDateString(
-        { en: "en-IN", hi: "hi-IN", ta: "ta-IN" }[lang],
-        { day: "numeric", month: "short", year: "numeric" },
-      )
-    : "—";
-  return (
-    <section className="dashboard">
-      <div className="hero">
-        <div className="hero-copy">
-          <span className="eyebrow">✳ {c.eyebrow}</span>
-          <h1>{c.title}</h1>
-          <p>{c.intro}</p>
-          <div className="actions">
-            <Link className="btn btn-light" to="/checker">
-              {c.primary} <span>↗</span>
-            </Link>
-            <Link className="btn btn-ghost" to="/prescription">
-              {c.secondary} <span>→</span>
-            </Link>
-          </div>
-        </div>
-        <div className="hero-art" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="hero-center">✳</div>
-          <div className="hero-dot dot-one" />
-          <div className="hero-dot dot-two" />
-          <div className="hero-dot dot-three" />
-        </div>
-      </div>
-      <div className="section-head section-heading">
-        <div>
-          <span className="eyebrow">HOW IT WORKS</span>
-          <h2>{c.workflow}</h2>
-        </div>
-      </div>
-      <div className="workflow-grid">
-        <div className="workflow-card">
-          <span className="step-number">01</span>
-          <span className="step-icon">▧</span>
-          <h3>{c.step1}</h3>
-          <p>{c.step1Text}</p>
-        </div>
-        <div className="workflow-card">
-          <span className="step-number">02</span>
-          <span className="step-icon">⌁</span>
-          <h3>{c.step2}</h3>
-          <p>{c.step2Text}</p>
-        </div>
-        <div className="workflow-card">
-          <span className="step-number">03</span>
-          <span className="step-icon">◫</span>
-          <h3>{c.step3}</h3>
-          <p>{c.step3Text}</p>
-        </div>
-      </div>
-      <div className="section-head section-heading">
-        <div>
-          <span className="eyebrow">AT A GLANCE</span>
-          <h2>{c.activity}</h2>
-          <p>{c.activityText}</p>
-        </div>
-        <Link className="text-link" to="/medicines">
-          {t.nav.medicines} →
-        </Link>
-      </div>
-      <div className="stats">
-        <div className="card stat">
-          <span className="stat-num">
-            {medicines.length.toString().padStart(2, "0")}
-          </span>
-          <span>{c.medicines}</span>
-        </div>
-        <div className="card stat">
-          <span className="stat-num">
-            {lastCheck ? alerts.length.toString().padStart(2, "0") : "—"}
-          </span>
-          <span>{c.findings}</span>
-        </div>
-        <div className="card stat">
-          <span className="stat-date">{when}</span>
-          <span>{c.latest}</span>
-        </div>
-      </div>
-      <div className="dashboard-bottom">
-        <div className="card recent-card">
-          <div className="section-head">
-            <h2>{t.dashboard.recent}</h2>
-            <Link className="text-link" to="/checker">
-              {c.viewAll} →
-            </Link>
-          </div>
-          {alerts.length ? (
-            alerts
-              .slice(0, 2)
-              .map((item, index) => (
-                <AlertCard
-                  key={index}
-                  severity={item.severity}
-                  title={item.title}
-                  message={item.message}
-                  advice={item.advice}
-                />
-              ))
-          ) : (
-            <p className="muted">{c.noFindings}</p>
-          )}
-        </div>
-        <div className="side-links">
-          <Link to="/graph">
-            <span className="side-icon">⌘</span>
-            <strong>{c.graph}</strong>
-            <span>↗</span>
-          </Link>
-          <Link to="/doctor">
-            <span className="side-icon">◫</span>
-            <strong>{c.clinician}</strong>
-            <span>↗</span>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
+  const { medicines, lastCheck } = useMedicines();
+  const { reminders, today } = useReminders();
+  const { recent } = useReports();
+  const alerts = lastCheck ? [...lastCheck.drugDrug, ...lastCheck.drugFood] : [];
+  const chartItems = lastCheck ? alerts : sampleGraph().edges;
+  const counts = severityOrder.reduce((result, key) => ({ ...result, [key]: chartItems.filter((item) => item.severity === key).length }), {});
+  const matched = medicines.filter((medicine) => medicine.drugId).length;
+  const matchedPercent = medicines.length ? Math.round((matched / medicines.length) * 100) : 0;
+  const upcoming = [...reminders].sort((a, b) => a.time.localeCompare(b.time)).slice(0, 3);
+  const latest = alerts[0];
+  const latestName = latest ? latest.drugNames?.join(" + ") || `${latest.drugName} + ${pick(latest.foodName)}` : null;
+
+  return <section className="dashboard patient-dashboard">
+    <div className="dashboard-hero"><div><span className="eyebrow">{c.eyebrow}</span><h1>{c.title}</h1><p>{c.lead}</p><div className="actions"><Link className="btn btn-light" to="/report">{c.report} <span>↗</span></Link><Link className="btn btn-ghost" to="/checker">{c.compare} →</Link></div></div><div className="hero-visual" aria-hidden="true"><span>01</span><span>02</span><span>03</span><span>04</span><div className="visual-line" /><strong>MEDSAFE</strong><small>CARE WORKFLOW</small></div></div>
+    <div className="dashboard-metrics"><div className="metric-card"><span>{c.medicines}</span><strong>{medicines.length.toString().padStart(2, "0")}</strong><small>{matched} catalog matches</small></div><div className="metric-card"><span>{c.findings}</span><strong>{lastCheck ? alerts.length.toString().padStart(2, "0") : "—"}</strong><small>{lastCheck ? new Date(lastCheck.checkedAt).toLocaleDateString({ en: "en-IN", hi: "hi-IN", ta: "ta-IN" }[lang]) : c.noFinding}</small></div><div className="metric-card"><span>{c.reminders}</span><strong>{reminders.length.toString().padStart(2, "0")}</strong><small>{reminders.filter((item) => item.enabled).length} bells enabled</small></div><div className="metric-card"><span>{c.reports}</span><strong>{recent.length.toString().padStart(2, "0")}</strong><small>Unverified drafts</small></div></div>
+    <div className="dashboard-main-grid"><section className="card dashboard-chart-card"><div className="section-head"><div><span className="eyebrow">COMPARISON INSIGHT</span><h2>{c.chart}</h2><p>{c.chartLead}</p></div><Link className="text-link" to="/graph">{c.graph} →</Link></div><SeverityChart counts={counts} labels={t.severity} /><div className="chart-footer"><span><strong>{c.source}:</strong> {lastCheck ? c.current : c.sample}</span><span>{lastCheck ? lastCheck.coverage : sampleGraph().coverage}</span></div></section><section className="card dashboard-coverage"><span className="eyebrow">IDENTITY CHECK</span><h2>{c.coverage}</h2><div className="coverage-donut" style={{ "--coverage": `${matchedPercent}%` }}><strong>{matched}/{medicines.length}</strong></div><p>{c.coverageText}</p><Link className="text-link" to="/medicines">{t.nav.medicines} →</Link></section></div>
+    <div className="dashboard-lower-grid"><section className="card"><div className="section-head"><div><span className="eyebrow">YOUR CARE LOG</span><h2>{c.recent}</h2></div><Link className="text-link" to="/report">{c.open} →</Link></div>{recent.length ? <ul className="recent-report-list">{recent.slice(0, 3).map((report) => <li key={report.id}><span className="report-file-icon">▤</span><div><strong>{new Date(report.createdAt).toLocaleDateString({ en: "en-IN", hi: "hi-IN", ta: "ta-IN" }[lang], { day: "numeric", month: "short" })} · {report.documents} documents</strong><small>{report.medicines} medicines · {report.findings} possible links · draft</small></div></li>)}</ul> : <p className="muted">{c.none}</p>}<div className="latest-finding"><strong>{c.latest}</strong><p>{latestName ? `${latestName} · ${t.severity[latest.severity]}` : c.noFinding}</p><Link className="text-link" to="/checker">{c.details} →</Link></div></section><section className="card"><div className="section-head"><div><span className="eyebrow">DAILY ROUTINE</span><h2>{c.schedule}</h2></div><Link className="text-link" to="/reminders">{c.all} →</Link></div><ul className="dashboard-reminders">{upcoming.map((item) => <li key={item.id}><time>{item.time}</time><div><strong>{item.medicine}</strong><small>{item.instruction || "Medicine reminder"}</small></div><span className={`status-chip ${item.takenOn === today ? "done" : item.enabled ? "due" : "paused"}`}>{item.takenOn === today ? c.taken : item.enabled ? c.due : c.paused}</span></li>)}</ul><p className="muted small">{c.note}</p></section></div>
+    <section className="workflow-strip"><div><span className="eyebrow">HOW THE REPORT IS BUILT</span><h2>{c.workflow}</h2></div><ol><li><span>01</span>{c.step1}</li><li><span>02</span>{c.step2}</li><li><span>03</span>{c.step3}</li><li><span>04</span>{c.step4}</li></ol></section>
+  </section>;
 }
