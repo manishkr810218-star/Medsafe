@@ -1,12 +1,12 @@
-# Medsafe — Drug Interaction Checker (prototype, Phase 3)
+# Medsafe — Drug Interaction Checker (prototype)
 
 All drugs, foods and interactions are **fictional DEMO data**: not medical advice.
 
 ## Current project scope
 
-This repository contains the starting prototype for the Medsafe problem statement. It has a React frontend, an Express API, a MySQL schema, medicine-name matching against the demo catalog, drug–drug and drug–food interaction checks, and English/Hindi text. The interaction tables represent relationships between the fictional catalog entries.
+This repository contains a local React/Vite frontend, Express API, MySQL catalog, prescription OCR review flow, interaction graph, voice-enabled alerts and clinician summary. The interface supports English, Hindi and Tamil. The interaction tables represent relationships between fictional catalog entries.
 
-The required OCR pipeline and accuracy benchmark, standard drug codes, clinically sourced interaction knowledge graph, voice alerts, and doctor-facing alternative review are **not implemented yet**. Do not use the demo results for patient care.
+This is a **technical demo, not a clinical checker**. It has no clinically sourced interaction graph or validated safer substitutions. Missing alerts do not mean a combination is safe. Do not use results for patient care.
 
 - `frontend/`: React + Vite (port 5173)
 - `backend/`: Node.js + Express + MySQL (port 4000)
@@ -23,7 +23,7 @@ cp .env.example .env        # PowerShell: Copy-Item .env.example .env
 # Set DB_PASSWORD in backend/.env for your local database.
 npm run db:init             # creates the database, tables and DEMO seed data
 npm run dev                 # API on http://localhost:4000
-
+n
 # 2) frontend (new terminal)
 cd frontend
 npm ci
@@ -37,6 +37,19 @@ npm run dev                 # http://localhost:5173  (proxies /api to :4000)
 | `npm run db:seed` | Re-apply demo seed only |
 | `npm run db:reset` | **Drops the database**, then recreates and seeds it |
 
+## Prototype workflows
+
+- **Prescription OCR:** Upload an image or PDF (up to 12 MB, 3 PDF pages) on `/prescription`. PDF.js renders PDF pages and Tesseract.js reads text in the browser. Correct the extracted text and explicitly confirm any identified **fictional demo catalog** name before adding it. Handwriting and brand names may be missed. The browser downloads the English OCR model on first use; the image is not uploaded to our API.
+- **Standard code lookup:** After correction, enter an individual medicine name and opt in to send **only that name** to the US National Library of Medicine RxNorm service. The UI displays candidate RxCUIs for clinician confirmation. Codes are not automatically assigned, saved to the patient record, or used for interaction checks. This lookup has limited relevance for Indian brand names.
+- **Interaction graph:** `/graph` and `GET /api/graph` show typed drug–drug and drug–food edges with severity and demo provenance. The graph is fictional and deliberately does not claim clinical coverage.
+- **Patient alerts:** `/checker` uses English/Hindi demo messages and a Tamil demo summary. Each alert has a browser speech button (`en-IN`, `hi-IN`, `ta-IN`); speech depends on voices available on the device. Text stays visible.
+- **Clinician view:** `/doctor` lists medicines, findings, severity, demo provenance and unverified names. It provides a printable review summary and states that no validated alternative is available. It does not suggest a specific replacement without evidence.
+- **OCR benchmark:** `cd frontend && npm run benchmark:ocr` regenerates four synthetic English prescription-like images and measures normalized character error rate (CER, with spaces/punctuation removed) and fictional drug-name recall with the same Tesseract engine. The current synthetic set yielded **8/8 names recalled and 0 mean CER**; see `frontend/benchmark/results.json`. These are **not real handwritten prescriptions**; the result cannot predict performance on actual prescriptions.
+
+## Remaining clinical work
+
+Before any patient use, obtain licensed, clinically reviewed interaction data with source/version citations, drug identity validation suitable for local brands, real handwritten-prescription benchmark samples with consent, verified Hindi/Tamil clinical translations, clinician-approved alternatives, authentication, and privacy/security review.
+
 Without Node, use the mysql CLI instead:
 ```bash
 mysql -u root -p --default-character-set=utf8mb4 -e "CREATE DATABASE IF NOT EXISTS drug_interaction_checker CHARACTER SET utf8mb4"
@@ -49,6 +62,8 @@ mysql -u root -p --default-character-set=utf8mb4 drug_interaction_checker < back
 |---|---|---|
 | GET | `/api/health` | API + DB status |
 | GET | `/api/drugs`, `/api/foods` | Demo catalogs |
+| GET | `/api/graph` | Demo graph nodes, typed edges, severity and provenance |
+| GET | `/api/normalize?name=<corrected-name>` | On-demand RxNorm code candidates; sends the supplied name to NLM |
 | GET | `/api/medicines/search?q=<name>` | Verify / search a name against the `drugs` table (read-only) |
 | GET / POST | `/api/medicines` | List / add `{name, dose, frequency}` (name is verified server-side) |
 | DELETE | `/api/medicines/:id`, `/api/medicines` | Remove one / clear all |

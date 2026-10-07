@@ -6,15 +6,21 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "benchmark:ocr": "node benchmark/run.mjs",
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\" benchmark/run.mjs"
   },
   "dependencies": {
+    "pdfjs-dist": "^6.4.299",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0"
+    "react-router-dom": "^6.26.0",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
+    "prettier": "^3.9.9",
+    "sharp": "^0.35.5",
     "vite": "^5.4.0"
   }
 }

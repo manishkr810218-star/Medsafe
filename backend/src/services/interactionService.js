@@ -21,6 +21,7 @@ const DF_SQL = `
 // Pure: turns DB rows into the JSON shape the frontend already uses.
 export function shapeResult({ ddRows = [], dfRows = [], skipped = [], checkedAt = new Date().toISOString() }) {
   return {
+    coverage: 'Fictional demo catalog only. Missing alerts do not establish safety.',
     drugDrug: ddRows.map((r) => ({
       severity: r.severity,
       drugNames: [r.drug_a_name, r.drug_b_name],

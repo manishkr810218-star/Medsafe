@@ -1,13 +1,15 @@
-import { useState } from 'react';
-import { useLang } from '../i18n/LanguageContext.jsx';
-import { useMedicines } from '../context/MedicineContext.jsx';
-import { useMedicineSearch } from '../hooks/useMedicineSearch.js';
+import React from "react";
+import { useState } from "react";
+import { useLang } from "../i18n/LanguageContext.jsx";
+import { useMedicines } from "../context/MedicineContext.jsx";
+import { useMedicineSearch } from "../hooks/useMedicineSearch.js";
 
 export default function Medicines() {
   const { t } = useLang();
-  const { medicines, loading, addMedicine, removeMedicine, clearMedicines } = useMedicines();
+  const { medicines, loading, addMedicine, removeMedicine, clearMedicines } =
+    useMedicines();
   const m = t.medicines;
-  const [form, setForm] = useState({ name: '', dose: '', frequency: '' });
+  const [form, setForm] = useState({ name: "", dose: "", frequency: "" });
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
   // Phase 3: `selected` is a medicine the user picked from the database matches.
@@ -16,9 +18,13 @@ export default function Medicines() {
   const isPicked = Boolean(selected) && selected.name === form.name;
   const search = useMedicineSearch(form.name, { skip: isPicked });
   const typed = form.name.trim();
-  const matches = search.status === 'done' ? search.data.matches : [];
+  const matches = search.status === "done" ? search.data.matches : [];
   // Verified = a real row from the database (picked, or typed text that matches one exactly).
-  const verified = isPicked ? selected : search.status === 'done' && search.data.found ? search.data.medicine : null;
+  const verified = isPicked
+    ? selected
+    : search.status === "done" && search.data.found
+      ? search.data.medicine
+      : null;
 
   const pick = (med) => {
     setSelected(med);
@@ -30,7 +36,7 @@ export default function Medicines() {
     if (!typed) return;
     const ok = await addMedicine(form); // the server verifies the name again before saving
     if (ok) {
-      setForm({ name: '', dose: '', frequency: '' });
+      setForm({ name: "", dose: "", frequency: "" });
       setSelected(null);
     }
   };
@@ -43,21 +49,38 @@ export default function Medicines() {
         <h2>{m.add}</h2>
         <label>
           {m.name}
-          <input value={form.name} onChange={set('name')} placeholder={m.namePh} maxLength={100} autoComplete="off" required />
+          <input
+            value={form.name}
+            onChange={set("name")}
+            placeholder={m.namePh}
+            maxLength={100}
+            autoComplete="off"
+            required
+          />
         </label>
 
         {typed && (
           <div className="search-panel" aria-live="polite">
-            {search.status === 'loading' && <p className="muted small">{m.searching}</p>}
+            {search.status === "loading" && (
+              <p className="muted small">{m.searching}</p>
+            )}
 
-            {search.status === 'error' && (
+            {search.status === "error" && (
               <p className="error small">
-                {t.common.apiError}{' '}
-                <button type="button" className="btn btn-outline" onClick={search.retry}>{t.common.retry}</button>
+                {t.common.apiError}{" "}
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={search.retry}
+                >
+                  {t.common.retry}
+                </button>
               </p>
             )}
 
-            {search.status === 'done' && matches.length === 0 && <p className="muted small">{m.noMatch}</p>}
+            {search.status === "done" && matches.length === 0 && (
+              <p className="muted small">{m.noMatch}</p>
+            )}
 
             {matches.length > 0 && !isPicked && (
               <>
@@ -66,8 +89,13 @@ export default function Medicines() {
                   {matches.map((med) => (
                     <li key={med.id}>
                       <button type="button" onClick={() => pick(med)}>
-                        <span>{med.name}{med.genericName ? ` (${med.genericName})` : ''}</span>
-                        {med.matchType === 'exact' && <span className="badge badge-ok">{m.exactMatch}</span>}
+                        <span>
+                          {med.name}
+                          {med.genericName ? ` (${med.genericName})` : ""}
+                        </span>
+                        {med.matchType === "exact" && (
+                          <span className="badge badge-ok">{m.exactMatch}</span>
+                        )}
                       </button>
                     </li>
                   ))}
@@ -76,18 +104,40 @@ export default function Medicines() {
             )}
 
             {verified && (
-              <p className="small"><span className="badge badge-ok">{m.verifiedDb}</span> {verified.name}</p>
+              <p className="small">
+                <span className="badge badge-ok">{m.verifiedDb}</span>{" "}
+                {verified.name}
+              </p>
             )}
-            {!verified && search.status === 'done' && (
-              <p className="small"><span className="badge badge-warn">{m.unverified}</span> <span className="muted">{m.typedHint}</span></p>
+            {!verified && search.status === "done" && (
+              <p className="small">
+                <span className="badge badge-warn">{m.unverified}</span>{" "}
+                <span className="muted">{m.typedHint}</span>
+              </p>
             )}
           </div>
         )}
         <div className="row">
-          <label>{m.dose}<input value={form.dose} onChange={set('dose')} placeholder={m.dosePh} /></label>
-          <label>{m.freq}<input value={form.frequency} onChange={set('frequency')} placeholder={m.freqPh} /></label>
+          <label>
+            {m.dose}
+            <input
+              value={form.dose}
+              onChange={set("dose")}
+              placeholder={m.dosePh}
+            />
+          </label>
+          <label>
+            {m.freq}
+            <input
+              value={form.frequency}
+              onChange={set("frequency")}
+              placeholder={m.freqPh}
+            />
+          </label>
         </div>
-        <button className="btn" type="submit">{m.save}</button>
+        <button className="btn" type="submit">
+          {m.save}
+        </button>
       </form>
 
       {loading ? (
@@ -101,17 +151,30 @@ export default function Medicines() {
               <li key={med.id} className="card list-item">
                 <div>
                   <strong>{med.name}</strong>
-                  <div className="muted">{[med.dose, med.frequency].filter(Boolean).join(' · ')}</div>
-                  <span className={`badge ${med.drugId ? 'badge-ok' : 'badge-warn'}`}>
+                  <div className="muted">
+                    {[med.dose, med.frequency].filter(Boolean).join(" · ")}
+                  </div>
+                  <span
+                    className={`badge ${med.drugId ? "badge-ok" : "badge-warn"}`}
+                  >
                     {med.drugId ? m.verified : m.unverified}
                   </span>
-                  {!med.drugId && <div className="muted small">{m.unverifiedHint}</div>}
+                  {!med.drugId && (
+                    <div className="muted small">{m.unverifiedHint}</div>
+                  )}
                 </div>
-                <button className="btn btn-outline" onClick={() => removeMedicine(med.id)}>{m.remove}</button>
+                <button
+                  className="btn btn-outline"
+                  onClick={() => removeMedicine(med.id)}
+                >
+                  {m.remove}
+                </button>
               </li>
             ))}
           </ul>
-          <button className="btn btn-outline" onClick={clearMedicines}>{m.clearAll}</button>
+          <button className="btn btn-outline" onClick={clearMedicines}>
+            {m.clearAll}
+          </button>
         </>
       )}
     </>

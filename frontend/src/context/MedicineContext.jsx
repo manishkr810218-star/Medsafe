@@ -1,13 +1,39 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { listMedicines, addMedicineApi, removeMedicineApi, clearMedicinesApi } from '../services/medicineService.js';
-import { getDrugCatalog, getFoodCatalog } from '../services/interactionService.js';
+import React from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+} from "react";
+import {
+  listMedicines,
+  addMedicineApi,
+  removeMedicineApi,
+  clearMedicinesApi,
+} from "../services/medicineService.js";
+import {
+  getDrugCatalog,
+  getFoodCatalog,
+} from "../services/interactionService.js";
 
 const MedicineContext = createContext(null);
-const CHECK_KEY = 'dic.lastCheck';
+const CHECK_KEY = "dic.lastCheck";
 
 const loadLastCheck = () => {
   try {
-    return JSON.parse(localStorage.getItem(CHECK_KEY)) ?? null;
+    const value = JSON.parse(localStorage.getItem(CHECK_KEY));
+    return value &&
+      Array.isArray(value.drugDrug) &&
+      Array.isArray(value.drugFood) &&
+      value.drugDrug.every(
+        (item) => Array.isArray(item?.drugNames) && item?.message,
+      ) &&
+      value.drugFood.every(
+        (item) => item?.drugName && item?.message && item?.foodName,
+      )
+      ? value
+      : null;
   } catch {
     return null;
   }
@@ -21,12 +47,19 @@ export function MedicineProvider({ children }) {
   const [error, setError] = useState(false); // true when the backend is unreachable / failing
   const [lastCheck, setLastCheck] = useState(loadLastCheck);
 
-  useEffect(() => localStorage.setItem(CHECK_KEY, JSON.stringify(lastCheck)), [lastCheck]);
+  useEffect(
+    () => localStorage.setItem(CHECK_KEY, JSON.stringify(lastCheck)),
+    [lastCheck],
+  );
 
   const reload = useCallback(async () => {
     setLoading(true);
     try {
-      const [meds, d, f] = await Promise.all([listMedicines(), getDrugCatalog(), getFoodCatalog()]);
+      const [meds, d, f] = await Promise.all([
+        listMedicines(),
+        getDrugCatalog(),
+        getFoodCatalog(),
+      ]);
       setMedicines(meds);
       setDrugs(d);
       setFoods(f);
@@ -39,7 +72,7 @@ export function MedicineProvider({ children }) {
   }, []);
 
   useEffect(() => {
-    localStorage.removeItem('dic.medicines'); // Phase 1 stored medicines locally; they now live in MySQL
+    localStorage.removeItem("dic.medicines"); // Phase 1 stored medicines locally; they now live in MySQL
     reload();
   }, [reload]);
 
@@ -56,15 +89,30 @@ export function MedicineProvider({ children }) {
     }
   }, []);
 
-  const addMedicine = useCallback((input) => mutate(() => addMedicineApi(input)), [mutate]);
-  const removeMedicine = useCallback((id) => mutate(() => removeMedicineApi(id)), [mutate]);
+  const addMedicine = useCallback(
+    (input) => mutate(() => addMedicineApi(input)),
+    [mutate],
+  );
+  const removeMedicine = useCallback(
+    (id) => mutate(() => removeMedicineApi(id)),
+    [mutate],
+  );
   const clearMedicines = useCallback(() => mutate(clearMedicinesApi), [mutate]);
 
   return (
     <MedicineContext.Provider
       value={{
-        medicines, drugs, foods, loading, error, reload,
-        addMedicine, removeMedicine, clearMedicines, lastCheck, setLastCheck,
+        medicines,
+        drugs,
+        foods,
+        loading,
+        error,
+        reload,
+        addMedicine,
+        removeMedicine,
+        clearMedicines,
+        lastCheck,
+        setLastCheck,
       }}
     >
       {children}

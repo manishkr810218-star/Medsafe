@@ -1,0 +1,41 @@
+{
+  "sampleCount": 4,
+  "metricDefinition": "CER is edit distance divided by reference characters on medicine lines after lowercasing and removing spaces/punctuation. Drug-name recall is exact name presence after the same normalization.",
+  "drugNameRecall": 1,
+  "meanCharacterErrorRate": 0,
+  "limitation": "Synthetic English images only. Script-like text uses a font, not real handwriting. No patient prescriptions or Indian-language OCR are included.",
+  "cases": [
+    {
+      "id": "clean-print",
+      "expected": "Demoxetine 10 mg once daily | Placebol 5 mg at night",
+      "recognized": "Sample prescription 01 | Demoxetine 10 mg once daily | Placebol 5 mg at night | FICTIONAL DEMO - NOT A REAL PRESCRIPTION",
+      "tesseractConfidence": 94,
+      "characterErrorRate": 0,
+      "drugNameRecall": "2/2"
+    },
+    {
+      "id": "small-print",
+      "expected": "Sampleprin 20 mg twice daily | Testafen 2 mg after food",
+      "recognized": "Sample prescription 02 | Sampleprin 20 mg twice daily | Testafen 2 mg after food | FICTIONAL DEMO - NOT A REAL PRESCRIPTION",
+      "tesseractConfidence": 94,
+      "characterErrorRate": 0,
+      "drugNameRecall": "2/2"
+    },
+    {
+      "id": "skew-low-contrast",
+      "expected": "Mockacillin 250 mg morning | Placebol 5 mg at night",
+      "recognized": "Sample prescription 03 | Mockacillin 250 mg morning | Placebol 5 mg at night | FICTIONAL DEMO - NOT A REAL PRESCRIPTION",
+      "tesseractConfidence": 93,
+      "characterErrorRate": 0,
+      "drugNameRecall": "2/2"
+    },
+    {
+      "id": "script-like",
+      "expected": "Demoxetine 10 mg once daily | Testafen 2 mg after food",
+      "recognized": "Sample prescription 04 | Demoxetine 10 mg once daily | Testafen 2 mg after food | FICTIONAL DEMO - NOT A REAL PRESCRIPTION",
+      "tesseractConfidence": 92,
+      "characterErrorRate": 0,
+      "drugNameRecall": "2/2"
+    }
+  ]
+}
