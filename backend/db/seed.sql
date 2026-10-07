@@ -28,6 +28,17 @@ INSERT INTO foods (id, name_en, name_hi, is_demo) VALUES
   ('demo-berries','Demo Berry Bowl',    'डेमो बेरी कटोरा', 1)
   ON DUPLICATE KEY UPDATE name_en = VALUES(name_en), name_hi = VALUES(name_hi), is_demo = VALUES(is_demo);
 
+-- Seeded fictional medicine list for Demo Patient; no real doses or care schedule.
+INSERT INTO patient_medicines (patient_id, drug_id, name, dose, frequency) VALUES
+  (1, 'demoxetine',  'Demoxetine',  'Demo only', 'Sample entry'),
+  (1, 'placebol',    'Placebol',    'Demo only', 'Sample entry'),
+  (1, 'sampleprin',  'Sampleprin',  'Demo only', 'Sample entry'),
+  (1, 'mockacillin', 'Mockacillin', 'Demo only', 'Sample entry'),
+  (1, 'testafen',    'Testafen',    'Demo only', 'Sample entry'),
+  (1, 'trialadine',  'Trialadine',  'Demo only', 'Sample entry'),
+  (1, 'simulor',     'Simulor',     'Demo only', 'Sample entry'),
+  (1, 'mockifen',    'Mockifen',    'Demo only', 'Sample entry')
+  ON DUPLICATE KEY UPDATE drug_id = VALUES(drug_id);
 INSERT INTO drug_interactions
   (drug_a_id, drug_b_id, severity, message_en, message_hi, advice_en, advice_hi, is_demo) VALUES
   ('demoxetine', 'placebol', 'high',
