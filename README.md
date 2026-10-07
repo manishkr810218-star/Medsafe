@@ -13,6 +13,7 @@ The required OCR pipeline and accuracy benchmark, standard drug codes, clinicall
 
 ## Setup
 Requires Node 18.11+ and MySQL 8 (or MariaDB 10.5+). Run the database server before initializing the schema.
+For the portable MySQL installed in this local Codex workspace, run `powershell -ExecutionPolicy Bypass -File .\scripts\start-local-db.ps1` from the repository root after a restart. Other machines can use their own MySQL installation.
 
 ```bash
 # 1) backend
