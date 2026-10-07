@@ -8,6 +8,12 @@ This repository contains a local React/Vite frontend, Express API, MySQL catalog
 
 This is a **technical demo, not a clinical checker**. It has no clinically sourced interaction graph or validated safer substitutions. Missing alerts do not mean a combination is safe. Do not use results for patient care.
 
+## New patient workflow
+
+The main application has **no separate Demo Lab page**. Open `/` for a patient dashboard, `/checker` for a full pair comparison, `/graph` for a severity-filtered network map, `/reminders` for a daily schedule, and `/report` to combine multiple prescriptions with a clinic report. `/confirmation` gates the printable master **draft** behind an explicit acknowledgement that software does not make treatment decisions. The report labels two AI connectors as unconnected and two self-entered reviewer records as simulations; it never claims real multi-doctor verification.
+
+When the API/MySQL service is unavailable, the frontend switches to an **offline sample workspace** using the same fictional names and relationships as `backend/db/seed.sql`. This mode is labelled in the banner and stores only sample medicines in the browser. Uploaded documents and their OCR text stay in the current tab's React memory. The dashboard keeps only non-identifying report counts in `sessionStorage` for that tab. See [the team explanation](docs/TEAM_PRESENTATION.md) for the architecture, demo sequence, and precise limitations.
+
 - `frontend/`: React + Vite (port 5173)
 - `backend/`: Node.js + Express + MySQL (port 4000)
 
@@ -23,12 +29,13 @@ cp .env.example .env        # PowerShell: Copy-Item .env.example .env
 # Set DB_PASSWORD in backend/.env for your local database.
 npm run db:init             # creates the database, tables and DEMO seed data
 npm run dev                 # API on http://localhost:4000
-n
 # 2) frontend (new terminal)
 cd frontend
 npm ci
 npm run dev                 # http://localhost:5173  (proxies /api to :4000)
 ```
+
+In Windows PowerShell, use `npm.cmd ci` and `npm.cmd run dev` if `npm.ps1` is blocked by the script execution policy. The frontend runs independently in offline sample mode while the backend or MySQL is stopped.
 
 ## Database commands (run in `backend/`)
 | Command | What it does |

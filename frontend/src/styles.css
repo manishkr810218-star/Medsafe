@@ -1127,6 +1127,7 @@ h3 {
 
 .report-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 20px 0; }
 .report-steps span { display: block; padding: 11px 13px; border-radius: 8px; background: #e8f2f0; color: #24595d; font-size: .78rem; font-weight: 750; }
+.report-steps span.done { background: #d9efe5; color: #1e664f; }.report-steps span.working { background: #fff0d2; color: #986115; }
 .master-section { margin-bottom: 20px; padding: 24px; }
 .master-section > h2, .master-section .section-head h2 { margin-top: 0; }
 .master-section h3 { margin: 18px 0 10px; font-size: .96rem; }

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "test": "node --test",
     "preview": "vite preview",
     "benchmark:ocr": "node benchmark/run.mjs",
     "format": "prettier --write \"src/**/*.{js,jsx,css}\" benchmark/run.mjs"
