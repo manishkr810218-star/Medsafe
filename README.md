@@ -10,9 +10,9 @@ This is a **technical demo, not a clinical checker**. It has no clinically sourc
 
 ## New patient workflow
 
-The main application has **no separate Demo Lab page**. Open `/` for a patient dashboard, `/checker` for a full pair comparison, `/graph` for a severity-filtered network map, `/reminders` for a daily schedule, and `/report` to combine multiple prescriptions with a clinic report. `/confirmation` gates the printable master **draft** behind an explicit acknowledgement that software does not make treatment decisions. The report labels two AI connectors as unconnected and two self-entered reviewer records as simulations; it never claims real multi-doctor verification.
+The main application has **no separate Demo Lab page**. Open `/` for a patient dashboard, `/checker` for a full pair comparison, `/graph` for a severity-filtered network map, `/reminders` for a daily schedule, and `/report` to combine multiple prescriptions with clinic reports. Building a draft opens `/verification`, a simulated two-doctor handoff showing **0/2 authenticated approvals**. `/confirmation` gates the printable master **draft** behind an explicit acknowledgement that software does not make treatment decisions. Two AI connectors remain unconnected and reviewer records are simulations.
 
-When the API/MySQL service is unavailable, the frontend switches to an **offline sample workspace** using the same fictional names and relationships as `backend/db/seed.sql`. This mode is labelled in the banner and stores only sample medicines in the browser. Uploaded documents and their OCR text stay in the current tab's React memory. The dashboard keeps only non-identifying report counts in `sessionStorage` for that tab. See [the team explanation](docs/TEAM_PRESENTATION.md) for the architecture, demo sequence, and precise limitations.
+When the API/MySQL service is unavailable, the frontend switches to an **offline sample workspace** using the same fictional names and relationships as `backend/db/seed.sql`: **9 medicines, 6 foods, and 15 interaction edges**. The Master report page offers a starter case and an extended case with three prescriptions and two checkups. This mode is labelled in the banner and stores only sample medicines in the browser. Uploaded documents and their OCR text stay in the current tab's React memory. The dashboard keeps only non-identifying report counts in `sessionStorage` for that tab. See [the team explanation](docs/TEAM_PRESENTATION.md), [the full judges guide](docs/JUDGES_MASTER_GUIDE.md), and [the Gemini slide prompt](docs/GEMINI_PPT_PROMPT.md).
 
 - `frontend/`: React + Vite (port 5173)
 - `backend/`: Node.js + Express + MySQL (port 4000)
@@ -81,7 +81,7 @@ A name is **verified** only when it matches a row in the MySQL `drugs` table. Ma
 spaces, repeated spaces, hyphens and underscores (`" DEMO  xetine "` matches `Demoxetine`). The search endpoint never
 writes to the database. `found` is `true` only for an exact normalized match; `matches` lists suggestions
 (exact first, then names starting with, then containing the text). `genericName` is `null` until a generic-name
-column exists in `drugs`. To verify more medicines, add rows to the `drugs` table (the seed only has 5 fictional ones).
+column exists in `drugs`. To verify more medicines, add rows to the `drugs` table (the seed currently has 9 fictional ones).
 
 ```
 GET /api/medicines/search?q=%20demoxetine%20

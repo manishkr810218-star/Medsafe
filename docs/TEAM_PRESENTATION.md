@@ -4,7 +4,7 @@ Medsafe is a **working technical prototype** for collecting several prescription
 
 ## The idea in one minute
 
-1. A patient uploads more than one prescription and a clinic report on **Master report**. Browser OCR reads images or up to three pages per PDF. The patient checks the text against each original.
+1. A patient uploads more than one prescription and a clinic report on **Master report**. Browser OCR reads images or up to three pages per PDF. The patient checks the text against each original. Two fictional sample cases are available, including an extended five-document case.
 2. The patient confirms medicine names against the local sample catalog. The software compares selected medicine pairs and food pairs against typed graph edges, displays severity and provenance, and marks unmatched names as skipped.
 3. The software shows two AI review connectors as **not connected**. It accepts two *simulated* reviewer notes and opens a **Dr. verification in process** demonstration screen with fictional doctor profiles. The screen and confirmation page both show **0/2 authenticated doctor approvals**; no actual review is running.
 4. The patient acknowledges that the output is an unverified draft. The browser can print it or save it as PDF. Real patient release is blocked until actual independently authenticated clinician reviews and validated data are implemented.
@@ -27,9 +27,9 @@ The order matters: document correction comes before matching, matching before co
 ## Five-minute judge demonstration
 
 1. Run the frontend and optionally the backend. If MySQL is absent, point out the **OFFLINE SAMPLE WORKSPACE** banner.
-2. On **Overview**, explain the severity bars and catalog match ring. The chart provenance is printed below it.
-3. Open **Master report**, choose **Load fictional sample case**, and show two sample prescriptions plus one checkup. Tick each *I checked this text* box, then add the recognized sample medicines.
-4. Select Demo Citrus Fruit and Demo Leafy Greens, run the comparison, and show the potential links. Open **Compare** to show how pairs with no sample rule are labelled **No sample link** rather than safe. Open **Graph** to filter high-severity edges.
+2. On **Overview**, explain the severity bars and catalog match ring. The chart provenance is printed below it. Open **Graph** now to show its 9/6/15 demo counts and high-severity filter, then return to **Master report**.
+3. Open **Master report**, choose **Load extended fictional case**, and show three prescriptions plus two checkups. Tick each *I checked this text* box, then add the six recognized sample medicines. The synthetic checkup values are displayed as context but are not interpreted by the software.
+4. Select Demo Herbal Tea and Demo Berry Bowl, run the comparison, and show the potential links. The catalog now contains **9 fictional medicines, 6 foods and 15 graph edges**; a fresh six-medicine case plus those two foods gives **7 sample links**. An existing medicine list may produce more. Stay on Master report until the draft is built: its unfinished form resets when leaving this route. Afterward, open **Compare** to show that an unlisted pair says **No sample link**, never safe.
 5. Select **Fill fictional doctor examples**, then build the draft. On **Dr. verification in process**, show the two fictional profiles, separate review stages and **0/2 authenticated approvals**. Open **Confirmation** and explain why the counters remain **0/2 AI** and **0/2 authenticated doctors**. Acknowledge and open the printable **UNVERIFIED DRAFT**.
 6. Open **Reminders**, switch on a sample schedule entry, press **Test bell**, and explain the open-tab limitation. Alerts and draft summaries are available in English, Hindi and Tamil, with device-dependent voice output.
 

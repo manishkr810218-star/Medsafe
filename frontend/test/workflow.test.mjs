@@ -43,5 +43,5 @@ test("offline catalog and MySQL seed contain the same fictional graph records", 
   assert.equal(sampleFoods.length, 6);
   assert.equal(graph.edges.length, 15);
   for (const item of [...sampleDrugs, ...sampleFoods]) assert.ok(seed.includes(`('${item.id}'`), `${item.id} missing from SQL seed`);
-  for (const edge of graph.edges) assert.ok(seed.includes(`('${edge.source}', '${edge.target}'`), `${edge.source} + ${edge.target} missing from SQL seed`);
+  for (const edge of graph.edges) assert.ok(seed.includes(`('${edge.source}', '${edge.target}', '${edge.severity}'`), `${edge.source} + ${edge.target} severity differs from SQL seed`);
 });
