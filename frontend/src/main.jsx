@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App.jsx';
 import { LanguageProvider } from './i18n/LanguageContext.jsx';
 import { MedicineProvider } from './context/MedicineContext.jsx';
+import { ReminderProvider } from './context/ReminderContext.jsx';
 import './styles.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -11,7 +12,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <LanguageProvider>
         <MedicineProvider>
-          <App />
+          <ReminderProvider><App /></ReminderProvider>
         </MedicineProvider>
       </LanguageProvider>
     </BrowserRouter>

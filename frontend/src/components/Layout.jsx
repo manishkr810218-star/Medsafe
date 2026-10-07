@@ -11,6 +11,7 @@ export default function Layout() {
     ["/medicines", t.nav.medicines],
     ["/checker", t.nav.checker],
     ["/prescription", t.nav.prescription],
+    ["/reminders", t.nav.reminders],
     ["/doctor", t.nav.doctor],
     ["/graph", t.nav.graph],
   ];

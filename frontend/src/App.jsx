@@ -8,6 +8,7 @@ import Prescription from "./pages/Prescription.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Doctor from "./pages/Doctor.jsx";
 import Graph from "./pages/Graph.jsx";
+import Reminders from "./pages/Reminders.jsx";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="prescription" element={<Prescription />} />
         <Route path="doctor" element={<Doctor />} />
         <Route path="graph" element={<Graph />} />
+        <Route path="reminders" element={<Reminders />} />
         <Route path="home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Route>
