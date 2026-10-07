@@ -6,7 +6,7 @@ Medsafe is a **working technical prototype** for collecting several prescription
 
 1. A patient uploads more than one prescription and a clinic report on **Master report**. Browser OCR reads images or up to three pages per PDF. The patient checks the text against each original.
 2. The patient confirms medicine names against the local sample catalog. The software compares selected medicine pairs and food pairs against typed graph edges, displays severity and provenance, and marks unmatched names as skipped.
-3. The software shows two AI review connectors as **not connected**. It accepts two *simulated* reviewer notes to demonstrate the handoff, while the confirmation screen shows **0/2 authenticated doctor approvals**.
+3. The software shows two AI review connectors as **not connected**. It accepts two *simulated* reviewer notes and opens a **Dr. verification in process** demonstration screen with fictional doctor profiles. The screen and confirmation page both show **0/2 authenticated doctor approvals**; no actual review is running.
 4. The patient acknowledges that the output is an unverified draft. The browser can print it or save it as PDF. Real patient release is blocked until actual independently authenticated clinician reviews and validated data are implemented.
 
 The order matters: document correction comes before matching, matching before comparison, and human review before any care decision. The [WHO polypharmacy technical report](https://www.who.int/publications/i/item/WHO-UHC-SDS-2019.11) supports involving patients and a multi-professional team in medicine review; this app demonstrates that workflow rather than claiming clinical authority.
@@ -30,7 +30,7 @@ The order matters: document correction comes before matching, matching before co
 2. On **Overview**, explain the severity bars and catalog match ring. The chart provenance is printed below it.
 3. Open **Master report**, choose **Load fictional sample case**, and show two sample prescriptions plus one checkup. Tick each *I checked this text* box, then add the recognized sample medicines.
 4. Select Demo Citrus Fruit and Demo Leafy Greens, run the comparison, and show the potential links. Open **Compare** to show how pairs with no sample rule are labelled **No sample link** rather than safe. Open **Graph** to filter high-severity edges.
-5. Enter two different fictional reviewer names and notes, mark them as simulated, and open **Confirmation**. Explain why the counters remain **0/2 AI** and **0/2 authenticated doctors**. Acknowledge and open the printable **UNVERIFIED DRAFT**.
+5. Select **Fill fictional doctor examples**, then build the draft. On **Dr. verification in process**, show the two fictional profiles, separate review stages and **0/2 authenticated approvals**. Open **Confirmation** and explain why the counters remain **0/2 AI** and **0/2 authenticated doctors**. Acknowledge and open the printable **UNVERIFIED DRAFT**.
 6. Open **Reminders**, switch on a sample schedule entry, press **Test bell**, and explain the open-tab limitation. Alerts and draft summaries are available in English, Hindi and Tamil, with device-dependent voice output.
 
 ## Roadmap to a real patient-ready system

@@ -10,6 +10,7 @@ import Doctor from "./pages/Doctor.jsx";
 import Graph from "./pages/Graph.jsx";
 import Reminders from "./pages/Reminders.jsx";
 import MasterReport from "./pages/MasterReport.jsx";
+import DoctorVerification from "./pages/DoctorVerification.jsx";
 import Confirmation from "./pages/Confirmation.jsx";
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="graph" element={<Graph />} />
         <Route path="reminders" element={<Reminders />} />
         <Route path="report" element={<MasterReport />} />
+        <Route path="verification" element={<DoctorVerification />} />
         <Route path="confirmation" element={<Confirmation />} />
         <Route path="home" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />

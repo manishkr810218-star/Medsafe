@@ -13,6 +13,33 @@ const copy = {
 };
 
 const newReviewer = () => ({ name: "", specialty: "", note: "", simulated: false });
+const exampleReviewerText = {
+  en: [
+    ["General medicine · fictional", "Confirm medicine names, doses, diagnoses and the original clinic report. No medical approval issued."],
+    ["Clinical pharmacology · fictional", "Review potential interactions against a validated source and discuss alternatives with the treating team. No medical approval issued."],
+  ],
+  hi: [
+    ["सामान्य चिकित्सा · काल्पनिक", "मूल पर्चे और क्लिनिक रिपोर्ट से दवा के नाम, मात्रा और रोग की पुष्टि करें। कोई चिकित्सा स्वीकृति नहीं दी गई है।"],
+    ["क्लिनिकल फार्माकोलॉजी · काल्पनिक", "संभावित इंटरैक्शन मान्य स्रोत से जाँचें और उपचार टीम से विकल्पों पर बात करें। कोई चिकित्सा स्वीकृति नहीं दी गई है।"],
+  ],
+  ta: [
+    ["பொது மருத்துவம் · கற்பனை", "அசல் மருந்துச் சீட்டு மற்றும் மருத்துவ அறிக்கையுடன் மருந்துப் பெயர், அளவு, நோயறிதலை உறுதி செய்யவும். மருத்துவ ஒப்புதல் வழங்கப்படவில்லை."],
+    ["மருத்துவ மருந்தியல் · கற்பனை", "சாத்தியமான தொடர்புகளைச் சரிபார்க்கப்பட்ட ஆதாரத்துடன் ஆய்வு செய்து சிகிச்சைக் குழுவுடன் மாற்றுகளைப் பேசவும். மருத்துவ ஒப்புதல் வழங்கப்படவில்லை."],
+  ],
+};
+const exampleReviewers = (lang) => ["Dr. Asha Sample", "Dr. Ravi Sample"].map((name, index) => ({
+  name, specialty: exampleReviewerText[lang][index][0], note: exampleReviewerText[lang][index][1], simulated: true,
+}));
+const reviewerDemoLabels = {
+  en: "Fill fictional doctor examples",
+  hi: "काल्पनिक डॉक्टर उदाहरण भरें",
+  ta: "கற்பனை மருத்துவர் எடுத்துக்காட்டுகளை நிரப்பு",
+};
+const draftActionLabels = {
+  en: "Build draft & view doctor review",
+  hi: "मसौदा बनाएँ और डॉक्टर समीक्षा देखें",
+  ta: "வரைவை உருவாக்கி மருத்துவர் மதிப்பாய்வைக் காண்க",
+};
 const sampleDocuments = () => [
   { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription A", text: "Demoxetine 10 mg once daily\nPlacebol 20 mg at night", confidence: null, reviewed: false, source: "sample" },
   { id: crypto.randomUUID(), kind: "prescription", name: "Fictional prescription B", text: "Sampleprin 5 mg after food\nTestafen 100 mg", confidence: null, reviewed: false, source: "sample" },
@@ -94,7 +121,7 @@ export default function MasterReport() {
       findings, skipped: result.skipped, coverage: result.coverage, reviewers,
       voiceNote: voiceNote.trim(), aiReviews: [{ name: "AI reviewer A", status: "not connected" }, { name: "AI reviewer B", status: "not connected" }],
     });
-    navigate("/confirmation");
+    navigate("/verification");
   };
 
   return <section className="page-flow master-page">
@@ -107,7 +134,7 @@ export default function MasterReport() {
     </section>
     <section className="card master-section"><div className="section-head"><h2>{c.medicines}</h2><Link className="text-link" to="/medicines">Open medicine list →</Link></div><h3>{c.candidate}</h3><div className="candidate-chips">{candidates.map((drug) => <button className="btn btn-outline btn-small" key={drug.id} disabled={medicines.some((medicine) => medicine.drugId === drug.id)} onClick={() => { setResult(null); addMedicine({ name: drug.name, dose: "", frequency: "" }); }}>{drug.name} · {medicines.some((medicine) => medicine.drugId === drug.id) ? c.added : c.add}</button>)}{!candidates.length && <span className="muted">—</span>}</div><div className="selected-summary"><strong>{medicines.length} medicines</strong><span>{medicines.map((medicine) => medicine.name).join(" · ") || "Add medicines from a reviewed prescription."}</span></div><h3>{c.foods}</h3><div className="food-options">{foods.map((food) => <label className="check" key={food.id}><input type="checkbox" checked={foodIds.includes(food.id)} onChange={() => { setFoodIds((ids) => ids.includes(food.id) ? ids.filter((id) => id !== food.id) : [...ids, food.id]); setResult(null); }} />{pick(food.name)}</label>)}</div></section>
     <section className="card master-section"><div className="section-head"><h2>{c.comparison}</h2><button className="btn" disabled={Boolean(busyId)} onClick={compare}>{busyId === "compare" ? c.running : c.run}</button></div><div className="evidence-grid"><div className="evidence-card"><strong>01 · OCR</strong><span>{documents.filter((document) => document.reviewed).length}/{documents.length} text reviews complete</span><small>Browser Tesseract · human correction required</small></div><div className="evidence-card"><strong>02 · Catalog match</strong><span>{medicines.filter((medicine) => medicine.drugId).length}/{medicines.length} names found</span><small>{mode === "sample" ? "Fictional offline catalog" : "Local MySQL demo catalog"}</small></div><div className="evidence-card"><strong>03 · Graph rules</strong><span>{result ? `${findings.length} potential links` : "Waiting for comparison"}</span><small>Fictional rules · no clinical coverage</small></div></div><div className="notice"><strong>{c.ai}:</strong> {c.aiPending}</div><h3>{c.results}</h3>{result ? <><p className="muted">{c.fallback} {result.skipped.length ? `Skipped: ${result.skipped.join(", ")}.` : ""}</p><div className="finding-rows">{findings.length ? findings.map((finding, index) => <div className="finding-row" key={index}><span className={`severity-dot ${finding.severity}`} /><div><strong>{finding.title}</strong><small>{finding.type} · {finding.severity.toUpperCase()} · {pick(finding.message)}</small></div></div>) : <p>{result.coverage}</p>}</div></> : <p className="muted">{c.noResult}</p>}</section>
-    <section className="card master-section"><h2>{c.reviewers}</h2><p className="notice">{c.gate}</p><div className="reviewer-grid">{reviewers.map((reviewer, index) => <div className="reviewer-card" key={index}><h3>{c.reviewer} {index + 1} <span className="badge badge-warn">SIMULATED</span></h3><label>{c.name}<input value={reviewer.name} onChange={(event) => updateReviewer(index, { name: event.target.value, simulated: false })} placeholder="Fictional reviewer name" /></label><label>{c.specialty}<input value={reviewer.specialty} onChange={(event) => updateReviewer(index, { specialty: event.target.value, simulated: false })} placeholder="e.g. General medicine" /></label><label>{c.note}<textarea rows={3} value={reviewer.note} onChange={(event) => updateReviewer(index, { note: event.target.value, simulated: false })} placeholder="Review notes for discussion" /></label><label className="check"><input type="checkbox" checked={reviewer.simulated} disabled={!reviewer.name.trim() || !reviewer.note.trim()} onChange={(event) => updateReviewer(index, { simulated: event.target.checked })} />{c.demoReview}</label></div>)}</div><div className="voice-note"><label>{c.lab}<textarea rows={3} value={voiceNote} onChange={(event) => setVoiceNote(event.target.value)} placeholder="Optional context from the clinic report; not interpreted automatically" /></label><label className="check"><input type="checkbox" checked={voiceConsent} onChange={(event) => setVoiceConsent(event.target.checked)} />{c.voiceConsent}</label><button className="btn btn-outline" disabled={!voiceConsent} onClick={dictate}>{c.voice}</button></div><div className="actions"><button className="btn" disabled={!ready} onClick={makeDraft}>{c.draft} →</button></div></section>
+    <section className="card master-section"><div className="section-head"><h2>{c.reviewers}</h2><button className="btn btn-outline btn-small" onClick={() => setReviewers(exampleReviewers(lang))}>{reviewerDemoLabels[lang]}</button></div><p className="notice">{c.gate}</p><div className="reviewer-grid">{reviewers.map((reviewer, index) => <div className="reviewer-card" key={index}><h3>{c.reviewer} {index + 1} <span className="badge badge-warn">SIMULATED</span></h3><label>{c.name}<input value={reviewer.name} onChange={(event) => updateReviewer(index, { name: event.target.value, simulated: false })} placeholder="Fictional reviewer name" /></label><label>{c.specialty}<input value={reviewer.specialty} onChange={(event) => updateReviewer(index, { specialty: event.target.value, simulated: false })} placeholder="e.g. General medicine" /></label><label>{c.note}<textarea rows={3} value={reviewer.note} onChange={(event) => updateReviewer(index, { note: event.target.value, simulated: false })} placeholder="Review notes for discussion" /></label><label className="check"><input type="checkbox" checked={reviewer.simulated} disabled={!reviewer.name.trim() || !reviewer.note.trim()} onChange={(event) => updateReviewer(index, { simulated: event.target.checked })} />{c.demoReview}</label></div>)}</div><div className="voice-note"><label>{c.lab}<textarea rows={3} value={voiceNote} onChange={(event) => setVoiceNote(event.target.value)} placeholder="Optional context from the clinic report; not interpreted automatically" /></label><label className="check"><input type="checkbox" checked={voiceConsent} onChange={(event) => setVoiceConsent(event.target.checked)} />{c.voiceConsent}</label><button className="btn btn-outline" disabled={!voiceConsent} onClick={dictate}>{c.voice}</button></div><div className="actions"><button className="btn" disabled={!ready} onClick={makeDraft}>{draftActionLabels[lang]} →</button></div></section>
     {error && <p className="error" role="alert">{error}</p>}
   </section>;
 }
