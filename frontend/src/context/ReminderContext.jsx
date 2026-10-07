@@ -58,7 +58,8 @@ export function ReminderProvider({ children }) {
       setRinging(due);
       try { playReminderBell(); } catch { /* Audio may be blocked until a user gesture. */ }
       if ("Notification" in window && Notification.permission === "granted") {
-        new Notification("Medsafe medicine reminder", { body: `${due.medicine} · ${due.instruction || "Check your schedule"}` });
+        try { new Notification("Medsafe medicine reminder", { body: `${due.medicine} · ${due.instruction || "Check your schedule"}` }); }
+        catch { /* Some mobile browsers do not support the constructor. */ }
       }
     };
     tick();

@@ -95,6 +95,7 @@ export function MedicineProvider({ children }) {
     try {
       await action();
       setMedicines(await listMedicines());
+      setLastCheck(null); // Medicine changes invalidate an earlier comparison.
       setError(false);
       return true;
     } catch {
@@ -106,6 +107,7 @@ export function MedicineProvider({ children }) {
   const addMedicine = useCallback(async (input) => {
     if (mode === "sample") {
       setMedicines((current) => addSampleMedicine(current, input));
+      setLastCheck(null);
       return true;
     }
     return mutate(() => addMedicineApi(input));
@@ -113,6 +115,7 @@ export function MedicineProvider({ children }) {
   const removeMedicine = useCallback(async (id) => {
     if (mode === "sample") {
       setMedicines((current) => current.filter((item) => item.id !== id));
+      setLastCheck(null);
       return true;
     }
     return mutate(() => removeMedicineApi(id));
@@ -120,6 +123,7 @@ export function MedicineProvider({ children }) {
   const clearMedicines = useCallback(async () => {
     if (mode === "sample") {
       setMedicines([]);
+      setLastCheck(null);
       return true;
     }
     return mutate(clearMedicinesApi);
